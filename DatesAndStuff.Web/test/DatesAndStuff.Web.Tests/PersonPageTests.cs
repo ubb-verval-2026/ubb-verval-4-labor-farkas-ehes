@@ -142,7 +142,7 @@ public class PersonPageTests
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
         var input = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreasePercentageInput']")));
         input.Clear();
-        input.SendKeys("-15");
+        input.SendKeys("-10");
 
         // Act
         var submitButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']")));
