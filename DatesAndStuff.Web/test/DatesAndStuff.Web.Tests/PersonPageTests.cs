@@ -103,7 +103,11 @@ public class PersonPageTests
     [TestCase(-5)]
     public void Person_SalaryIncrease_ShouldIncrease(int percentage)
     {
-        var baseSalary = 5000.0;
+        var person = new Person("Testelini Testelina",
+                    new EmploymentInformation(5000, new Employer("RO12312312", "Verdici", "Testelono Testeliniii", null)),
+                    new UselessPaymentService(),
+                    new LocalTaxData("Tivoli"),
+                    new FoodPreferenceParams() { CanEatChocolate = true, CanEatGluten = false });
 
         // Arrange
         driver.Navigate().GoToUrl(BaseURL);
@@ -119,13 +123,13 @@ public class PersonPageTests
         var submitButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']")));
         submitButton.Click();
 
+        person.IncreaseSalary(percentage);
 
         // Assert
         var salaryLabel = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='DisplayedSalary']")));
         var salaryAfterSubmission = double.Parse(salaryLabel.Text);
 
-        var target = baseSalary * (1 + (double)percentage / 100);
-        salaryAfterSubmission.Should().BeApproximately(target, 0.001);
+        salaryAfterSubmission.Should().BeApproximately(person.Salary, 0.001);
     }
 
     [Test]
@@ -148,7 +152,7 @@ public class PersonPageTests
         {
             var found = driver.FindElements(By.CssSelector(".validation-message"));
             return found.Count == 2 ? found : null;
-        }); 
+        });
 
         // Assert
         elements.Should().NotBeNull();
