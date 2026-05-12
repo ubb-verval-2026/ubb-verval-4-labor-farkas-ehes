@@ -127,6 +127,33 @@ public class PersonPageTests
         var target = baseSalary * (1 + (double)percentage / 100);
         salaryAfterSubmission.Should().BeApproximately(target, 0.001);
     }
+
+    [Test]
+    public void Person_IllegalSalaryDecrease_ShouldShowErrorUI()
+    {
+        // Arrange
+        driver.Navigate().GoToUrl(BaseURL);
+        driver.FindElement(By.XPath("//*[@data-test='PersonPageNavigation']")).Click();
+
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+        var input = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreasePercentageInput']")));
+        input.Clear();
+        input.SendKeys("-15");
+
+        // Act
+        var submitButton = wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@data-test='SalaryIncreaseSubmitButton']")));
+        submitButton.Click();
+
+        var elements = wait.Until(driver =>
+        {
+            var found = driver.FindElements(By.CssSelector(".validation-message"));
+            return found.Count == 2 ? found : null;
+        }); 
+
+        // Assert
+        elements.Should().NotBeNull();
+    }
+
     private bool IsElementPresent(By by)
     {
         try
