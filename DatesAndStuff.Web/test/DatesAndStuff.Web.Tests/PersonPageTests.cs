@@ -1,12 +1,13 @@
-using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Text;
 using FluentAssertions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using System.Text;
 
 namespace DatesAndStuff.Web.Tests;
 
@@ -177,6 +178,28 @@ public class PersonPageTests
         var rows = table.FindElements(By.CssSelector("tbody tr"));
 
         rows.Should().HaveCountGreaterThanOrEqualTo(3, "Expected at least 3 flights from New Mexico to Dublin...");
+
+        double priceThreshold = 300.0;
+        bool foundCheapFlight = false;
+
+        foreach (var row in rows)
+        {
+            var priceInput = row.FindElement(By.CssSelector("input[name='price']"));
+            var price = double.Parse(priceInput.GetAttribute("value"), CultureInfo.InvariantCulture);
+
+            if (price < priceThreshold)
+            {
+                foundCheapFlight = true;
+                break;
+            }
+
+        }
+
+        if (foundCheapFlight)
+        {
+            var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
+            screenshot.SaveAsFile(@"C:\Users\f12sz\Desktop\cheap_flight.png");
+        }
     }
 
     private bool IsElementPresent(By by)
