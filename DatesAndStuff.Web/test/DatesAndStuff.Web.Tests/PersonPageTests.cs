@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using FluentAssertions;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 
@@ -78,7 +78,7 @@ public class PersonPageTests
     [SetUp]
     public void SetupTest()
     {
-        driver = new ChromeDriver();
+        driver = new FirefoxDriver();
         verificationErrors = new StringBuilder();
     }
 
