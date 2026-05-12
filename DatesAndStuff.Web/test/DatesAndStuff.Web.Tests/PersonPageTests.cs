@@ -158,6 +158,27 @@ public class PersonPageTests
         elements.Should().NotBeNull();
     }
 
+    [Test]
+    public void TestMexicoCityDublinFlights()
+    {
+        driver.Navigate().GoToUrl("https://blazedemo.com/");
+
+        var fromDropdown = new SelectElement(driver.FindElement(By.Name("fromPort")));
+        fromDropdown.SelectByText("Mexico City");
+
+        var toDropdown = new SelectElement(driver.FindElement(By.Name("toPort")));
+        toDropdown.SelectByText("Dublin");
+
+        driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+
+        var table = wait.Until(ExpectedConditions.ElementExists(By.CssSelector("table")));
+        var rows = table.FindElements(By.CssSelector("tbody tr"));
+
+        rows.Should().HaveCountGreaterThanOrEqualTo(3, "Expected at least 3 flights from New Mexico to Dublin...");
+    }
+
     private bool IsElementPresent(By by)
     {
         try
